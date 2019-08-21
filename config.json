@@ -1,0 +1,6 @@
+{
+  "db_password": "password",
+  "db_username": "username",
+  "db_name": "db",
+  "db_port": 8000
+}

@@ -1,3 +1,16 @@
+## Requirements
+
+Docker and jq is required to run the postgresql database.
+To install on Ubuntu:
+```
+sudo apt-get install jq docker
+```
+To install on Mac:
+Follow https://hub.docker.com/editions/community/docker-ce-desktop-mac and run
+```
+brew install jq
+```
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
