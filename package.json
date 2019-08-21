@@ -17,6 +17,7 @@
     "start": "concurrently -n \"Client,Server\" \"yarn start-client\" \"yarn start-server\"",
     "start-client": "react-scripts start",
     "start-server": "nodemon --watch server/ server/index.js",
+    "start-db": "./database/start_postgres.sh",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
