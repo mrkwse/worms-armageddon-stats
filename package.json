@@ -6,6 +6,7 @@
   "dependencies": {
     "concurrently": "^4.1.2",
     "express": "^4.17.1",
+    "express-fileupload": "^1.1.5",
     "nodemon": "^1.19.1",
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",
@@ -17,7 +18,7 @@
     "react-scripts": "3.1.1"
   },
   "scripts": {
-    "start": "concurrently -n \"Client,Server\" \"yarn start-client\" \"yarn start-server\"",
+    "start": "concurrently -n \"Client,Server,Database\" \"yarn start-client\" \"yarn start-server\" \"yarn start-db\"",
     "start-client": "react-scripts start",
     "start-server": "nodemon --watch server/ server/index.js",
     "start-db": "./database/start_postgres.sh",

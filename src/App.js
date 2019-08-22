@@ -19,6 +19,13 @@ function App() {
           Learn React
         </a>
       </header>
+      <form
+        action='/upload_log'
+        method='post'
+        encType="multipart/form-data">
+        <input type="file" name="logFile" />
+        <input type='submit' value='Upload Log' />
+      </form>
     </div>
   );
 }

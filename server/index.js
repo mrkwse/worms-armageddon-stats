@@ -1,10 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser')
 const path = require('path');
-const app = express();
-
+const fileUpload = require('express-fileupload');
 const Sequelize = require('sequelize');
+
 const config = require('../config.json');
+const app = express();
 
 // Option 1: Passing parameters separately
 const db = new Sequelize(config.db_name, config.db_username, config.db_password, {
@@ -21,7 +22,7 @@ db.authenticate()
     console.error('Unable to connect to the database:', err);
   });
 
-// Setup database and associations 
+// Setup database and associations
 require('./setupDatabase')(db)
 
 app.use(express.static(path.join(__dirname, 'build')));
@@ -33,6 +34,13 @@ app.get('/ping', function (req, res) {
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
+
+app.use(fileUpload({
+  safeFileNames: /\\/g,
+  preserveExtension: true,
+  limits: { fileSize: 1 * 1024 * 1024 }, // Limit to 1mb upload
+}));
+app.post('/upload_log', require("./controllers/upload.js"));
 
 const port = process.env.PORT || 8080
 app.listen(port);
