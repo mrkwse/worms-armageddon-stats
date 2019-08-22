@@ -1,0 +1,44 @@
+Game Started at 2019-08-16 20:56:19 GMT
+Game Engine Version: 3.7.2.1
+File Format Version: 3.6.29.48 - 3.7.2.1
+Exported with Version: 3.7.2.1
+
+Red:  "1-UP"
+Blue: "2-UP"
+
+[00:00:01.94] ••• 2-UP starts turn
+[00:00:13.86] ••• 2-UP fires Armageddon
+[00:00:16.84] ••• 2-UP loses turn due to loss of control; time used: 6.92 sec turn, 0.02 sec retreat
+[00:01:02.20] ••• Damage dealt: 505 (2 kills) to 1-UP, 640 (6 kills) to 2-UP
+[00:01:02.20] ••• 1-UP starts turn
+[00:01:09.38] ••• 1-UP fires Ninja Rope
+[00:01:10.38] ••• 1-UP fires Ninja Rope
+[00:01:12.74] ••• 1-UP fires Ninja Rope
+[00:01:50.30] ••• 1-UP fires Jet Pack
+[00:01:55.82] ••• 1-UP used 30 units of Jet Pack fuel
+[00:01:59.38] ••• 1-UP fires Jet Pack
+[00:02:02.78] ••• 1-UP used 14 units of Jet Pack fuel
+[00:02:07.16] ••• 1-UP fires Baseball Bat
+[00:02:10.74] ••• 1-UP ends turn; time used: 59.04 sec turn, 3.00 sec retreat
+[00:02:19.04] ••• Damage dealt: 100 (1 kill) to 2-UP
+[00:02:19.04] ••• 2-UP starts turn
+[00:02:23.50] ••• 2-UP fires Holy Hand-Grenade
+[00:02:28.42] ••• 2-UP loses turn due to loss of control; time used: 1.08 sec turn, 3.00 sec retreat
+[00:02:40.78] ••• Damage dealt: 84 (1 kill) to 1-UP, 60 (1 kill) to 2-UP
+[00:02:40.80] ••• Game Ends - Round Finished
+
+Team time totals:
+1-UP: Turn: 00:00:59.04, Retreat: 00:00:03.00, Total: 00:01:02.04, Turn count: 1
+2-UP: Turn: 00:00:08.00, Retreat: 00:00:03.02, Total: 00:00:11.02, Turn count: 2
+
+Total Jet Pack fuel used: 44
+End of round 2
+
+Round time: 0:02:40
+Total game time elapsed: 0:02:40
+
+1-UP wins the round.
+
+Worm of the round: Garfield (1-UP)
+Most kills with one shot: 8 - Boody (2-UP)
+Most damage with one shot: 1071 - Boody (2-UP)
