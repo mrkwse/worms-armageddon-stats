@@ -1,0 +1,27 @@
+Game Started at 2019-08-24 21:44:37 GMT
+Game Engine Version: 3.7.2.1
+File Format Version: 3.6.29.48 - 3.7.2.1
+Exported with Version: 3.7.2.1
+
+Red:  "1-UP"
+Blue: "5-UP"
+
+[00:00:02.32] ••• 5-UP starts turn
+[00:00:10.18] ••• 5-UP fires Sheep
+[00:00:18.92] ••• 5-UP ends turn; time used: 5.88 sec turn, 3.00 sec retreat
+[00:00:29.28] ••• Damage dealt: 63 to 5-UP
+[00:00:29.28] ••• 1-UP starts turn
+[00:00:30.04] ••• 1-UP ends turn; time used: 0.00 sec turn, 0.00 sec retreat
+[00:00:30.04] ••• Game Ends - User Quit
+
+Team time totals:
+1-UP: Turn: 00:00:00.00, Retreat: 00:00:00.00, Total: 00:00:00.00, Turn count: 1
+5-UP: Turn: 00:00:05.88, Retreat: 00:00:03.00, Total: 00:00:08.88, Turn count: 1
+
+End of round 1
+
+Round time: 0:00:30
+Total game time elapsed: 0:00:30
+
+
+Most damage with one shot: 63 - Worm 1 (5-UP)

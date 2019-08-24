@@ -1,0 +1,40 @@
+Game Started at 2019-08-24 21:45:50 GMT
+Game Engine Version: 3.7.2.1
+File Format Version: 3.6.29.48 - 3.7.2.1
+Exported with Version: 3.7.2.1
+
+Red:  "3-UP"
+Blue: "6-UP"
+
+[00:00:00.00] ••• 3-UP starts turn
+[00:00:02.80] ••• 3-UP fires Bazooka
+[00:00:07.40] ••• 3-UP ends turn; time used: 0.82 sec turn, 3.00 sec retreat
+[00:00:11.28] ••• 6-UP starts turn
+[00:00:12.42] ••• Sudden Death
+[00:00:15.60] ••• 6-UP fires Bazooka
+[00:00:20.20] ••• 6-UP ends turn; time used: 0.98 sec turn, 3.00 sec retreat
+[00:00:24.60] ••• Sudden Death
+[00:00:29.12] ••• Damage dealt: 31 to 6-UP
+[00:00:29.12] ••• 3-UP starts turn
+[00:00:33.76] ••• 3-UP fires Bazooka
+[00:00:38.36] ••• 3-UP ends turn; time used: 3.16 sec turn, 3.00 sec retreat
+[00:00:46.18] ••• 6-UP starts turn
+[00:00:46.74] ••• 6-UP fires Bazooka
+[00:00:47.26] ••• 6-UP loses turn due to loss of control; time used: 0.00 sec turn, 0.38 sec retreat
+[00:01:05.48] ••• Damage dealt: 2 (2 kills) to 6-UP
+[00:01:05.48] ••• 3-UP starts turn
+[00:01:07.04] ••• 3-UP ends turn; time used: 0.00 sec turn, 0.00 sec retreat
+[00:01:07.04] ••• Game Ends - User Quit
+
+Team time totals:
+3-UP: Turn: 00:00:03.98, Retreat: 00:00:06.00, Total: 00:00:09.98, Turn count: 3
+6-UP: Turn: 00:00:00.98, Retreat: 00:00:03.38, Total: 00:00:04.36, Turn count: 2
+
+End of round 2
+
+Round time: 0:01:07
+Total game time elapsed: 0:01:07
+
+
+Most kills with one shot: 1 - Worm 2 (6-UP)
+Most damage with one shot: 31 - Worm 1 (6-UP)

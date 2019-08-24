@@ -1,0 +1,26 @@
+Game Started at 2019-08-24 21:45:26 GMT
+Game Engine Version: 3.7.2.1
+File Format Version: 3.6.29.48 - 3.7.2.1
+Exported with Version: 3.7.2.1
+
+Red:  "3-UP"
+Blue: "6-UP"
+
+[00:00:00.00] ••• 6-UP starts turn
+[00:00:06.42] ••• 6-UP fires Bazooka
+[00:00:10.50] ••• 6-UP ends turn; time used: 4.46 sec turn, 3.00 sec retreat
+[00:00:14.52] ••• 3-UP starts turn
+[00:00:14.94] ••• 3-UP ends turn; time used: 0.00 sec turn, 0.00 sec retreat
+[00:00:14.94] ••• Game Ends - User Draw
+
+Team time totals:
+3-UP: Turn: 00:00:00.00, Retreat: 00:00:00.00, Total: 00:00:00.00, Turn count: 1
+6-UP: Turn: 00:00:04.46, Retreat: 00:00:03.00, Total: 00:00:07.46, Turn count: 1
+
+End of round 1
+
+Round time: 0:00:14
+Total game time elapsed: 0:00:14
+
+The round was drawn.
+
