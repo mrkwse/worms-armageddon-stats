@@ -25,6 +25,8 @@ db.authenticate()
 // Setup database and associations
 require('./setupDatabase')(db)
 
+const logParser = require('./helpers/logParser')(db)
+
 app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('/ping', function (req, res) {
@@ -40,7 +42,7 @@ app.use(fileUpload({
   preserveExtension: true,
   limits: { fileSize: 1 * 1024 * 1024 }, // Limit to 1mb upload
 }));
-app.post('/upload_log', require("./controllers/upload.js"));
+app.post('/upload_log', require("./controllers/upload.js")(logParser));
 
 const port = process.env.PORT || 8080
 app.listen(port);

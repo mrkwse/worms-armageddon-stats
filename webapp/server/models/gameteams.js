@@ -7,15 +7,15 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     retreatTimeInS: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.FLOAT,
       allowNull: false
     },
     turnTimeInS: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.FLOAT,
       allowNull: false
     },
     totalTimeInS: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.FLOAT,
       allowNull: false
     },
     roundCount: {

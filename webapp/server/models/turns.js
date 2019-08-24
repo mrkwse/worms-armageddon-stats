@@ -14,12 +14,16 @@ module.exports = (sequelize) => {
       type: Sequelize.DATE,
       allowNull: false
     },
-    turnTime: {
-      type: Sequelize.INTEGER,
+    turnTimeInS: {
+      type: Sequelize.FLOAT,
       allowNull: false
     },
-    retreatTime: {
-      type: Sequelize.INTEGER,
+    retreatTimeInS: {
+      type: Sequelize.FLOAT,
+      allowNull: false
+    },
+    changeoverTimeInS: {
+      type: Sequelize.FLOAT,
       allowNull: false
     },
     lossOfControl: {

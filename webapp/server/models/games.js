@@ -11,6 +11,10 @@ module.exports = (sequelize) => {
       type: Sequelize.DATE,
       allowNull: false
     },
+    filepath: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
     gameCompleted: {
       type: Sequelize.BOOLEAN,
       allowNull: false
@@ -25,7 +29,7 @@ module.exports = (sequelize) => {
     },
     // Time in seconds
     totalTimeInS: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.FLOAT,
       allowNull: false
     }
   }, {
