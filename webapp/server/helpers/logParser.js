@@ -168,21 +168,24 @@ module.exports = (db) => (logFilePath, finalFilePath, originalFileName) => {
     .then(() => {
       // Extract turn details
       let startTurnIndex = 0
+      let firstStart = true
       const turnArrays = []
       const turnEvents = events.slice(spaceIndices[1]+1, spaceIndices[2])
       turnEvents.forEach((turnEvent, index) => {
         const pattern = /starts turn/
         const match = pattern.exec(turnEvent)
         if(match) {
-          if(startTurnIndex !== index){
+          if(firstStart) {
+            firstStart = false
+          } else {
             turnArrays.push(
               turnEvents.slice(startTurnIndex, index)
             )
+            startTurnIndex = index
           }
-          startTurnIndex = index
         }
       })
-      if(startTurnIndex !== turnEvents.length - 1) {
+      if(firstStart === false) {
         turnArrays.push(
           turnEvents.slice(startTurnIndex, turnEvents.length - 1)
         )
@@ -208,7 +211,7 @@ module.exports = (db) => (logFilePath, finalFilePath, originalFileName) => {
         const utilityWeapons = []
         const weapons = []
         let turnStartTime;
-        let turnTeam;
+        let turnTeam = "";
         let turnEndViaLossOfControl = false;
         let turnTime;
         let retreatTime;
@@ -254,7 +257,7 @@ module.exports = (db) => (logFilePath, finalFilePath, originalFileName) => {
 
           // Get Jet Pack Fuel
           // [00:00:10.32] ��� 1-UP used 11 units of Jet Pack fuel
-          const fuelPattern = /used (.*) units of Jet Pack fuel$/
+          const fuelPattern = /used ([0-9]*)(?: \([0-9]\))? units of Jet Pack fuel$/
           const fuelMatch = fuelPattern.exec(turnEvent)
           if(fuelMatch && fuelMatch.length === 2) {
             const jetPackWeapon = utilityWeapons.find(uw => uw.name === "Jet Pack")
@@ -436,6 +439,9 @@ module.exports = (db) => (logFilePath, finalFilePath, originalFileName) => {
           data.game.totalKills = totalKills
           return data.game.save()
         })
+    })
+    .then(() => {
+      // TODO: Awards parsing 
     })
     .then(() => {
       console.log(`Finished Parsing: ${logFilePath}`)
