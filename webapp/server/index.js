@@ -23,8 +23,6 @@ db.authenticate()
     console.error('Unable to connect to the database:', err);
   });
 
-
-
 const logParser = require('./helpers/logParser')(db)
 
 app.use(express.static(path.join(__dirname, 'build')));
@@ -63,11 +61,7 @@ require('./setupDatabase')(db)
         return () => {
           return Promise.resolve()
             .then(() => {
-              console.log(`Parsing: ${logToParse}`)
-              return logParser(`./logs/toparse/${logToParse}`,logToParse)
-            })
-            .then(() => {
-              fs.renameSync(`./logs/toparse/${logToParse}`,`./logs/parsed/${logToParse}`)
+              return logParser(`./logs/toparse/${logToParse}`, `./logs/parsed/${logToParse}`,logToParse)
             })
         };
       };

@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 const utilityWeaponNames = [
   "Jet Pack",
   "Low Gravity",
@@ -90,7 +92,8 @@ const getGameTeams = (teamModels, teamTimeEvents, winnerEvents) => {
   return gameTeams;
 }
 
-module.exports = (db) => (logFilePath, originalFileName) => {
+module.exports = (db) => (logFilePath, finalFilePath, originalFileName) => {
+  console.log(`Parsing: ${logFilePath}`)
   const events = loadLog(logFilePath)
   const spaceIndices = []
   events.forEach((event, index) => {
@@ -106,7 +109,7 @@ module.exports = (db) => (logFilePath, originalFileName) => {
       return db.models.game.create({
         name: originalFileName,
         date: date,
-        filepath: logFilePath,
+        filepath: finalFilePath,
         gameCompleted: false,
         gameWentToSuddenDeath: false,
         suddenDeathTimeInS: 0,
@@ -433,6 +436,10 @@ module.exports = (db) => (logFilePath, originalFileName) => {
           data.game.totalKills = totalKills
           return data.game.save()
         })
+    })
+    .then(() => {
+      console.log(`Finished Parsing: ${logFilePath}`)
+      fs.renameSync(logFilePath,finalFilePath)
     })
     // .then(() => {
     //   console.log("DONE")

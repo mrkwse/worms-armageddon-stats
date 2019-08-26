@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
   const Worm = sequelize.define('worm', {
-    name: {
+    furtherAwardDetail: {
       type: Sequelize.STRING,
       allowNull: false
     },

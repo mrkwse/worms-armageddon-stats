@@ -1,4 +1,5 @@
 const uuid = require('uuid/v4');
+const fs = require('fs');
 
 module.exports = (logParser) => (req, res) => {
   if (Object.keys(req.files).length == 0) {
@@ -27,8 +28,7 @@ module.exports = (logParser) => (req, res) => {
     });
   })
     .then((logFilePath) => {
-      console.log(`Parsing: ${logFilePath}`)
-      return logParser(logFilePath, uploadedFileName)
+      return logParser(logFilePath, logFilePath.replace("uploaded","parsed"), uploadedFileName)
     })
     .then(() => {
       res.status(200).send('File uploaded!');
