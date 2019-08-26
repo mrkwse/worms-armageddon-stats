@@ -1,0 +1,36 @@
+Game Started at 2019-08-26 09:18:53 GMT
+Game Engine Version: 3.7.2.1
+File Format Version: 3.6.29.48 - 3.7.2.1
+Exported with Version: 3.7.2.1
+
+Red:   "!"£$%^&*())_-=+`"
+Blue:  "{}[];':@#~/?.>,<"
+Green: "Super BREAKING"
+
+[00:00:02.08] ••• {}[];':@#~/?.>,< starts turn
+[00:00:04.32] ••• {}[];':@#~/?.>,< fires Bazooka
+[00:00:08.92] ••• {}[];':@#~/?.>,< ends turn; time used: 0.94 sec turn, 3.00 sec retreat
+[00:00:11.22] ••• Super BREAKING starts turn
+[00:00:21.46] ••• Super BREAKING fires Baseball Bat
+[00:00:25.04] ••• Super BREAKING ends turn; time used: 5.96 sec turn, 3.00 sec retreat
+[00:00:28.92] ••• Damage dealt: 39 to !"£$%^&*())_-=+`
+[00:00:28.92] ••• !"£$%^&*())_-=+` starts turn
+[00:00:31.60] ••• !"£$%^&*())_-=+` fires Bazooka
+[00:00:34.16] ••• !"£$%^&*())_-=+` loses turn due to loss of control; time used: 1.02 sec turn, 1.76 sec retreat
+[00:00:38.74] ••• Damage dealt: 15 to !"£$%^&*())_-=+`
+[00:00:38.74] ••• {}[];':@#~/?.>,< starts turn
+[00:00:39.48] ••• {}[];':@#~/?.>,< ends turn; time used: 0.00 sec turn, 0.00 sec retreat
+[00:00:39.48] ••• Game Ends - User Quit
+
+Team time totals:
+!"£$%^&*())_-=+`: Turn: 00:00:01.02, Retreat: 00:00:01.76, Total: 00:00:02.78, Turn count: 1
+{}[];':@#~/?.>,<: Turn: 00:00:00.94, Retreat: 00:00:03.00, Total: 00:00:03.94, Turn count: 2
+Super BREAKING:   Turn: 00:00:05.96, Retreat: 00:00:03.00, Total: 00:00:08.96, Turn count: 1
+
+End of round 1
+
+Round time: 0:00:39
+Total game time elapsed: 0:00:39
+
+
+Most damage with one shot: 39 - !"£$%^&*()_ (Super BREAKING)
