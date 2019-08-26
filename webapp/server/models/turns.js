@@ -34,8 +34,8 @@ module.exports = (sequelize) => {
       type: Sequelize.BOOLEAN,
       allowNull: false
     },
-    weaponFireTime: {
-      type: Sequelize.DATE,
+    weaponFireTimeInS: {
+      type: Sequelize.FLOAT,
       allowNull: true
     },
     numberOfFires: {

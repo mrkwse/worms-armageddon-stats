@@ -382,7 +382,7 @@ module.exports = (db) => (logFilePath, originalFileName) => {
               changeoverTimeInS: changeoverTime,
               lossOfControl: turnEndViaLossOfControl,
               inSuddenDeath: suddenDeath,
-              weaponFireTime: weaponFired ? weapons[0].time : null,
+              weaponFireTimeInS: weaponFired ? weapons[0].time : null,
               numberOfFires: weaponFired ? weapons[0].fires : null,
               weaponTimeout: weaponFired ? weapons[0].timeout : null,
             })
