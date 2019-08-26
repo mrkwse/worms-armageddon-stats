@@ -1,3 +1,13 @@
+const utilityWeaponNames = [
+  "Jet Pack",
+  "Low Gravity",
+  "Fast Walk",
+  "Laser Sight",
+  "Ninja Rope",
+  "Parachute",
+  "Select Worm"
+]
+
 const loadLog = (logFilePath) => {
   const fs = require('fs');
   return fs.readFileSync(logFilePath).toString().split("\r\n");
@@ -9,8 +19,6 @@ const timeToS = (time) => {
 }
 
 const getDate = (event) => {
-  // TODO: Parse timezone (Assume GMT atm)
-  // Parses 'Game Started at 2019-08-16 20:34:51 GMT'
   return event.split(" ").slice(-3).join(" ")
 }
 
@@ -29,7 +37,6 @@ const getTeams = (teamEvents) => {
 
 const getGameTeams = (teamModels, teamTimeEvents, winnerEvent) => {
   const gameTeams = [];
-  //const pattern = /^(.*): Turn: (.*), Retreat: (.*), Total: (.*), Turn count: (.*)$/g;
   let matchFailed = false
   let teamMissing = false
   teamTimeEvents.forEach((teamTimeEvent) => {
@@ -90,17 +97,19 @@ module.exports = (db) => (logFilePath, originalFileName) => {
     }
   })
   const data = {}
-  Promise.resolve()
+  return Promise.resolve()
     .then(() => {
       // Extract details for game table
       const date = getDate(events[0])
-      console.log(db.models)
+      // console.log(db.models)
 
       return db.models.game.create({
         name: originalFileName,
         date: date,
         filepath: logFilePath,
         gameCompleted: false,
+        gameWentToSuddenDeath: false,
+        suddenDeathTimeInS: 0,
         totalDamage: 0,
         totalKills: 0,
         totalTimeInS: 0,
@@ -126,7 +135,7 @@ module.exports = (db) => (logFilePath, originalFileName) => {
         });
       }))
         .then((teamModels) => {
-          data.teams = [].concat(...teamModels);
+          data.teams = [].concat(...teamModels.map((tm) => tm[0]));
         })
     })
     .then(() => {
@@ -172,22 +181,267 @@ module.exports = (db) => (logFilePath, originalFileName) => {
         turnArrays.push(
           turnEvents.slice(startTurnIndex, turnEvents.length - 1)
         )
-         if(turnEvents[turnEvents.length-1].includes("Game Ends - Round Finished")) {
-           data.game.gameCompleted = true;
-           return Promise.all([
-             turnEvents,
-             data.game.save(),
-           ])
-         }
       }
+      if(turnEvents[turnEvents.length-1].includes("Game Ends - Round Finished")) {
+        data.game.gameCompleted = true;
+      }
+      data.game.totalTimeInS = timeToS(turnEvents[turnEvents.length-1].substring(1, 12))
       return Promise.all([
-        turnEvents
+        turnArrays,
+        data.game.save(),
       ])
     })
-    .then(([turnEvents]) => {
-      // Extract Award details
+    .then(([turnArrays]) => {
+      let suddenDeath = false
+      let suddenDeathTimeInS;
+      let totalKills = 0;
+      let totalDamage = 0;
+      let turnNumber = 0
+      let roundNumber = 1
+      let playersInRound = []
+      return Promise.all(turnArrays.map((turnEvents) => {
+        const utilityWeapons = []
+        const weapons = []
+        let turnStartTime;
+        let turnTeam;
+        let turnEndViaLossOfControl = false;
+        let turnTime;
+        let retreatTime;
+        let changeoverTime;
+        const damageArray = []
+        turnNumber = turnNumber + 1
+        turnEvents.forEach((turnEvent) => {
+          // Get Turn Start
+          // [00:00:02.24] ��� 1-UP starts turn
+          const turnStartPattern = /^\[(.*)\] ��� (.*) starts turn$/
+          const turnStartMatch = turnStartPattern.exec(turnEvent)
+          if(turnStartMatch && turnStartMatch.length === 3) {
+            turnStartTime = timeToS(turnStartMatch[1])
+            turnTeam = turnStartMatch[2]
+            if(turnTeam.includes(playersInRound)) {
+              roundNumber = roundNumber + 1
+              playersInRound = [turnTeam]
+            } else {
+              playersInRound.push(turnTeam)
+            }
+          }
 
+          // Get Weapons
+          // [00:00:13.50] ��� 1-UP fires Low Gravity
+          const weaponPattern = /^\[(.*)\] .* fires ([^\(]*)(?: \(([0-9]*) sec(?:, min bounce)?\))?$/
+          const weaponMatch = weaponPattern.exec(turnEvent)
+          if(weaponMatch && weaponMatch.length === 4) {
+            const weaponTime = weaponMatch[1]
+            const weaponName = weaponMatch[2]
+            const weaponTimeout = weaponMatch[3]
+            const weapon = utilityWeapons.find(uw => uw.name === weaponName)
+            if(weapon) {
+              weapon.fires = weapon.fires + 1
+            } else {
+              utilityWeapons.push({
+                name: weaponName,
+                fires: 1,
+                time: timeToS(weaponTime),
+                timeout: weaponTimeout === undefined ? null : parseInt(weaponTimeout)
+              })
+            }
+          }
+
+          // Get Jet Pack Fuel
+          // [00:00:10.32] ��� 1-UP used 11 units of Jet Pack fuel
+          const fuelPattern = /used (.*) units of Jet Pack fuel$/
+          const fuelMatch = fuelPattern.exec(turnEvent)
+          if(fuelMatch && fuelMatch.length === 2) {
+            // console.log("UW", utilityWeapons)
+            // console.log("W", weapons)
+            const jetPackWeapon = utilityWeapons.find(uw => uw.name === "Jet Pack")
+            jetPackWeapon.fuelUsed = fuelMatch[1]
+          }
+
+          // Get Sudden Death
+          // [00:19:02.66] ��� Sudden Death
+          const suddenDeathPattern = /^\[(.*)\] .* Sudden Death$/
+          const suddenDeathMatch = suddenDeathPattern.exec(turnEvent)
+          if(suddenDeathMatch && suddenDeathMatch.length === 2) {
+            suddenDeath = true
+            suddenDeathTimeInS = timeToS(suddenDeathMatch[1])
+          }
+
+          // Get turn time, retreat time, changeover time, turn end via loss of control
+          // [00:18:58.60] ��� 2-UP loses turn due to loss of control; time used: 10.96 sec turn, 0.00 sec retreat
+          const endTurnPattern = new RegExp("\\[(.*)\\] [^\ ]* "+ turnTeam + " (.*); time used: (.*) sec turn, (.*) sec retreat$");
+          const endTurnMatch = endTurnPattern.exec(turnEvent)
+          if(endTurnMatch && endTurnMatch.length === 5) {
+            if(endTurnMatch[2] === "loses turn due to loss of control") {
+              turnEndViaLossOfControl = true
+            }
+            turnTime = parseFloat(endTurnMatch[3])
+            retreatTime = parseFloat(endTurnMatch[4])
+            changeoverTime = (timeToS(endTurnMatch[1]) - turnStartTime) - turnTime - retreatTime
+          }
+
+          // Get damage and kills
+          // [00:01:30.82] ��� Damage dealt: 26 to 1-UP
+          const damagePattern = /^\[(.*)\] .* Damage dealt: (.*)$/
+          const damageMatch = damagePattern.exec(turnEvent)
+          if(damageMatch && damageMatch.length === 3) {
+            const damageStringArray = damageMatch[2].split(", ").reverse()
+            damageStringArray.forEach((damageString, index, array) => {
+              const damageSubPattern = /^([0-9]*)(?: \(([0-9]*) kills?\))? to (.*)$/
+              const damageSubMatch = damageSubPattern.exec(damageString)
+              if(damageSubMatch && damageSubMatch.length === 4) {
+                const kills = damageSubMatch[2] === undefined ? 0 : parseInt(damageSubMatch[2])
+                const damage = parseInt(damageSubMatch[1])
+                totalKills = totalKills + kills
+                totalDamage = totalDamage + damage
+                damageArray.push({
+                  damage: damage,
+                  kills: kills,
+                  team: damageSubMatch[3],
+                })
+              } else {
+                // Not parsed correctly. Someone must of used a ', ' in their name.
+                array[index] = array[index] + damageString
+              }
+            })
+          }
+
+        })
+
+        if(utilityWeapons.length > 0) {
+          if(!utilityWeaponNames.includes(utilityWeapons[utilityWeapons.length -1].name)) {
+            weapons.push(utilityWeapons.pop());
+          }
+        }
+
+        const promises = []
+        data.weapons = []
+        data.utilityweapons = []
+        data.turns = []
+        data.turndamages = []
+        data.turnutilityweapons = []
+
+        return Promise.resolve()
+          .then(() => {
+            return Promise.all(
+              weapons.map((weapon) => {
+                return db.models.weapon.findOrCreate({
+                  where: {
+                    name: weapon.name
+                  },
+                  defaults: {
+                    name: weapon.name
+                  }
+                })
+                  .then(([weaponModel]) => {
+                    weapon.model = weaponModel
+                    if(!data.weapons.find(w => w.name === weaponModel.name)) {
+                      data.weapons.push(weaponModel)
+                    }
+                  })
+              })
+            )
+          })
+          .then(() => {
+              return Promise.all(
+                utilityWeapons.map((utilityWeapon) => {
+                  return db.models.utilityweapon.findOrCreate({
+                    where: {
+                      name: utilityWeapon.name
+                    },
+                    defaults: {
+                      name: utilityWeapon.name
+                    }
+                  })
+                    .then(([utilityWeaponModel]) => {
+                      utilityWeapon.model = utilityWeaponModel
+                      if(!data.utilityweapons.find(w => w.name === utilityWeaponModel.name)) {
+                        data.utilityweapons.push(utilityWeaponModel)
+                      }
+                    })
+                })
+              )
+          })
+          .then(() => {
+            const teamModel = data.teams.find((teamModel) => teamModel.name === turnTeam)
+            const gameTeamModel = data.gameteams.find((gameTeamModel) => gameTeamModel.teamId === teamModel.id)
+
+            const weaponFired = (weapons.length > 0 && weapons[0].model)
+
+            return db.models.turn.create({
+              weaponId: weaponFired ? weapons[0].model.id : null,
+              gameteamId: gameTeamModel.id,
+              turnNumber: turnNumber,
+              roundNumber: roundNumber,
+              turnStartTimeInS: turnStartTime,
+              turnTimeInS: turnTime,
+              retreatTimeInS: retreatTime,
+              changeoverTimeInS: changeoverTime,
+              lossOfControl: turnEndViaLossOfControl,
+              inSuddenDeath: suddenDeath,
+              weaponFireTime: weaponFired ? weapons[0].time : null,
+              numberOfFires: weaponFired ? weapons[0].fires : null,
+              weaponTimeout: weaponFired ? weapons[0].timeout : null,
+            })
+              .then((turnModel) => {
+                data.turns.push(turnModel)
+                return turnModel;
+              })
+          })
+          .then((turnModel) => {
+            return Promise.all(damageArray.map((damageObj) => {
+              const teamModel = data.teams.find((teamModel) => teamModel.name === damageObj.team)
+
+              return db.models.turndamage.create({
+                damage: damageObj.damage,
+                kills: damageObj.kills,
+                turnId: turnModel.id,
+                teamId: teamModel.id,
+              })
+                .then((turndamageModel) => {
+                  data.turndamages.push(turndamageModel)
+                })
+            }))
+              .then(() => {
+                return turnModel
+              })
+          })
+          .then((turnModel) => {
+            return Promise.all(
+              utilityWeapons.map((utilityWeapon) => {
+                return db.models.turnutilityweapon.create({
+                  utilityWeaponFireTimeInS: utilityWeapon.time,
+                  numberOfFires: utilityWeapon.fires,
+                  jetPackFuel: utilityWeapon.fuelUsed,
+                  turnId: turnModel.id,
+                  utilityweaponId: utilityWeapon.model.id
+                })
+                  .then((turnutilityweaponModel) => {
+                    data.turnutilityweapons.push(turnutilityweaponModel)
+                  })
+              })
+            )
+
+          })
+      }))
+        .then(() => {
+          data.game.gameWentToSuddenDeath = suddenDeath;
+          data.game.suddenDeathTimeInS = suddenDeathTimeInS;
+          data.game.totalDamage = totalDamage
+          data.game.totalKills = totalKills
+          return data.game.save()
+        })
     })
+    // .then(() => {
+    //   console.log("DONE")
+    //   console.log("Game:", data.game.dataValues)
+    //   console.log("Teams:", data.teams.map((a) => a.dataValues))
+    //   console.log("GameTeams:", data.gameteams.map((a) => a.dataValues))
+    //   console.log("weapons:", data.weapons.map((a) => a.dataValues))
+    //   console.log("UtilityWeapons:", data.utilityweapons.map((a) => a.dataValues))
+    //   console.log("Turns:", data.turns.map((a) => a.dataValues))
+    //   console.log("TurnDamages:", data.turndamages.map((a) => a.dataValues))
+    //   console.log("TurnUtilityWeapons:", data.turnutilityweapons.map((a) => a.dataValues))
+    // })
 
-  console.log(events)
 }

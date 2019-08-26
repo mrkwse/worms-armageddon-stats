@@ -11,7 +11,8 @@ const app = express();
 const db = new Sequelize(config.db_name, config.db_username, config.db_password, {
   host: 'localhost',
   port: config.db_port,
-  dialect: 'postgres'
+  dialect: 'postgres',
+  logging: false
 });
 
 db.authenticate()
@@ -26,6 +27,8 @@ db.authenticate()
 require('./setupDatabase')(db)
 
 const logParser = require('./helpers/logParser')(db)
+
+logParser("./uploaded_logs/3e0b8bba-6ae9-42a3-832e-de2df2296731.log", "Custom File").then(() => {console.log("DONES")})
 
 app.use(express.static(path.join(__dirname, 'build')));
 

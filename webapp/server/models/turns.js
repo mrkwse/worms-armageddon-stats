@@ -10,8 +10,8 @@ module.exports = (sequelize) => {
       type: Sequelize.INTEGER,
       allowNull: false
     },
-    turnStartTime: {
-      type: Sequelize.DATE,
+    turnStartTimeInS: {
+      type: Sequelize.FLOAT,
       allowNull: false
     },
     turnTimeInS: {
@@ -36,11 +36,11 @@ module.exports = (sequelize) => {
     },
     weaponFireTime: {
       type: Sequelize.DATE,
-      allowNull: false
+      allowNull: true
     },
     numberOfFires: {
       type: Sequelize.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     // Timeout set on throwables
     weaponTimeout: {

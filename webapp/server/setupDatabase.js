@@ -19,7 +19,7 @@ module.exports = (db) => {
   }
   const allowNullOptions = {
     foreignKey: {
-      allowNull: false
+      allowNull: true
     }
   }
 
@@ -44,7 +44,7 @@ module.exports = (db) => {
   GameTeamFactory.belongsTo(TeamFactory)
 
   // Add weaponId, gameteamsId to turns table
-  WeaponFactory.hasMany(TurnFactory, disallowNullOptions)
+  WeaponFactory.hasMany(TurnFactory, allowNullOptions)
   TurnFactory.belongsTo(WeaponFactory)
   GameTeamFactory.hasMany(TurnFactory, disallowNullOptions)
   TurnFactory.belongsTo(GameTeamFactory)

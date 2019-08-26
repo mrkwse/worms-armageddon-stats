@@ -19,6 +19,14 @@ module.exports = (sequelize) => {
       type: Sequelize.BOOLEAN,
       allowNull: false
     },
+    gameWentToSuddenDeath: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false
+    },
+    suddenDeathTimeInS: {
+      type: Sequelize.FLOAT,
+      allowNull: true
+    },
     totalDamage: {
       type: Sequelize.INTEGER,
       allowNull: false
@@ -27,7 +35,6 @@ module.exports = (sequelize) => {
       type: Sequelize.INTEGER,
       allowNull: false
     },
-    // Time in seconds
     totalTimeInS: {
       type: Sequelize.FLOAT,
       allowNull: false

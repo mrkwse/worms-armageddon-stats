@@ -19,7 +19,7 @@
     "react-scripts": "3.1.1"
   },
   "scripts": {
-    "start": "concurrently -n \"Client,Server,Database\" \"yarn start-client\" \"yarn start-server\" \"yarn start-db\"",
+    "start": "yarn start-db && concurrently -n \"Client,Server\" \"yarn start-client\" \"yarn start-server\"",
     "start-client": "react-scripts start",
     "start-server": "nodemon --watch server/ server/index.js",
     "start-db": "./database/start_postgres.sh",

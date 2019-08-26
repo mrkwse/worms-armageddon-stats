@@ -2,8 +2,8 @@ const Sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
   const TurnUtilityWeapon = sequelize.define('turnutilityweapon', {
-    utilityWeaponFireTime: {
-      type: Sequelize.DATE,
+    utilityWeaponFireTimeInS: {
+      type: Sequelize.FLOAT,
       allowNull: false
     },
     numberOfFires: {
