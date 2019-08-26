@@ -8,9 +8,14 @@ const utilityWeaponNames = [
   "Select Worm"
 ]
 
+const escapeRegExp = (string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
 const loadLog = (logFilePath) => {
   const fs = require('fs');
-  return fs.readFileSync(logFilePath).toString().split("\r\n");
+  const array = fs.readFileSync(logFilePath).toString().split("\n");
+  return array.map((line) => line.replace(/\r/g,""))
 }
 
 const timeToS = (time) => {
@@ -35,12 +40,12 @@ const getTeams = (teamEvents) => {
   return teams;
 }
 
-const getGameTeams = (teamModels, teamTimeEvents, winnerEvent) => {
+const getGameTeams = (teamModels, teamTimeEvents, winnerEvents) => {
   const gameTeams = [];
   let matchFailed = false
   let teamMissing = false
   teamTimeEvents.forEach((teamTimeEvent) => {
-    const pattern = /^(.*): Turn: (.*), Retreat: (.*), Total: (.*), Turn count: (.*)$/;
+    const pattern = /^(.*):[ ]*Turn: (.*), Retreat: (.*), Total: (.*), Turn count: (.*)$/;
     const match = pattern.exec(teamTimeEvent)
     if(match === null || match.length !== 6) {
       console.log(teamTimeEvent)
@@ -70,21 +75,19 @@ const getGameTeams = (teamModels, teamTimeEvents, winnerEvent) => {
   if(teamMissing){
     return Promise.reject(new Error("Team missing in team time"))
   }
-  if(winnerEvent !== "The round was drawn.") {
-    const pattern = /(.*) wins the round./
+  winnerEvents.forEach((winnerEvent) => {
+    const pattern = /(.*) wins the (?:round|match)(?:\.|\!)?/
     const match = pattern.exec(winnerEvent)
-    if(!match || match.length !== 2){
+    if(match && match.length === 2){
       console.log(winnerEvent)
-      console.log(match)
-      return Promise.reject(new Error("Invalid Winner Statement"))
+      const winnerTeamName = match[1];
+      const gameTeam = gameTeams.find((gameTeam) => gameTeam.name === winnerTeamName)
+      if(!gameTeam) {
+        return Promise.reject(new Error("Winner not found in gameTeams array"))
+      }
+      gameTeam.winner = true
     }
-    const winnerTeamName = match[1];
-    const gameTeam = gameTeams.find((gameTeam) => gameTeam.name === winnerTeamName)
-    if(!gameTeam) {
-      return Promise.reject(new Error("Winner not found in gameTeams array"))
-    }
-    gameTeam.winner = true
-  }
+  })
   return gameTeams;
 }
 
@@ -101,8 +104,6 @@ module.exports = (db) => (logFilePath, originalFileName) => {
     .then(() => {
       // Extract details for game table
       const date = getDate(events[0])
-      // console.log(db.models)
-
       return db.models.game.create({
         name: originalFileName,
         date: date,
@@ -115,6 +116,7 @@ module.exports = (db) => (logFilePath, originalFileName) => {
         totalTimeInS: 0,
       })
         .then((gameModel) => {
+          console.log(`Created Game with id: ${gameModel.id}`)
           data.game = gameModel;
         })
     })
@@ -141,10 +143,11 @@ module.exports = (db) => (logFilePath, originalFileName) => {
     .then(() => {
       // Extract details for gameteam table
       const teamTimeEvents = events.slice(spaceIndices[2]+2, spaceIndices[3])
-      const winnerEvent = events.slice(spaceIndices[5]+1, spaceIndices[5]+2)[0]
+      const winnerEvents = events.slice(spaceIndices[5]+1)
 
-      const gameTeams = getGameTeams(data.teams, teamTimeEvents, winnerEvent)
-
+      return getGameTeams(data.teams, teamTimeEvents, winnerEvents)
+    })
+    .then((gameTeams) => {
       return Promise.all(gameTeams.map((gameTeam) => {
         return db.models.gameteam.create({
           gameId: data.game.id,
@@ -196,8 +199,8 @@ module.exports = (db) => (logFilePath, originalFileName) => {
       let suddenDeathTimeInS;
       let totalKills = 0;
       let totalDamage = 0;
-      let turnNumber = 0
-      let roundNumber = 1
+      let turnNumber = 0;
+      let roundNumber = 1;
       let playersInRound = []
       return Promise.all(turnArrays.map((turnEvents) => {
         const utilityWeapons = []
@@ -218,7 +221,7 @@ module.exports = (db) => (logFilePath, originalFileName) => {
           if(turnStartMatch && turnStartMatch.length === 3) {
             turnStartTime = timeToS(turnStartMatch[1])
             turnTeam = turnStartMatch[2]
-            if(turnTeam.includes(playersInRound)) {
+            if(playersInRound.includes(turnTeam)) {
               roundNumber = roundNumber + 1
               playersInRound = [turnTeam]
             } else {
@@ -252,8 +255,6 @@ module.exports = (db) => (logFilePath, originalFileName) => {
           const fuelPattern = /used (.*) units of Jet Pack fuel$/
           const fuelMatch = fuelPattern.exec(turnEvent)
           if(fuelMatch && fuelMatch.length === 2) {
-            // console.log("UW", utilityWeapons)
-            // console.log("W", weapons)
             const jetPackWeapon = utilityWeapons.find(uw => uw.name === "Jet Pack")
             jetPackWeapon.fuelUsed = fuelMatch[1]
           }
@@ -269,7 +270,7 @@ module.exports = (db) => (logFilePath, originalFileName) => {
 
           // Get turn time, retreat time, changeover time, turn end via loss of control
           // [00:18:58.60] ��� 2-UP loses turn due to loss of control; time used: 10.96 sec turn, 0.00 sec retreat
-          const endTurnPattern = new RegExp("\\[(.*)\\] [^\ ]* "+ turnTeam + " (.*); time used: (.*) sec turn, (.*) sec retreat$");
+          const endTurnPattern = new RegExp("\\[(.*)\\] [^\ ]* "+ escapeRegExp(turnTeam) + " (.*); time used: (.*) sec turn, (.*) sec retreat$");
           const endTurnMatch = endTurnPattern.exec(turnEvent)
           if(endTurnMatch && endTurnMatch.length === 5) {
             if(endTurnMatch[2] === "loses turn due to loss of control") {
@@ -313,6 +314,9 @@ module.exports = (db) => (logFilePath, originalFileName) => {
             weapons.push(utilityWeapons.pop());
           }
         }
+
+        const turnNumberLocal = turnNumber
+        const roundNumberLocal = roundNumber
 
         const promises = []
         data.weapons = []
@@ -367,12 +371,11 @@ module.exports = (db) => (logFilePath, originalFileName) => {
             const gameTeamModel = data.gameteams.find((gameTeamModel) => gameTeamModel.teamId === teamModel.id)
 
             const weaponFired = (weapons.length > 0 && weapons[0].model)
-
             return db.models.turn.create({
               weaponId: weaponFired ? weapons[0].model.id : null,
               gameteamId: gameTeamModel.id,
-              turnNumber: turnNumber,
-              roundNumber: roundNumber,
+              turnNumber: turnNumberLocal,
+              roundNumber: roundNumberLocal,
               turnStartTimeInS: turnStartTime,
               turnTimeInS: turnTime,
               retreatTimeInS: retreatTime,

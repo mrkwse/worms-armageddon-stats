@@ -28,8 +28,6 @@ require('./setupDatabase')(db)
 
 const logParser = require('./helpers/logParser')(db)
 
-logParser("./uploaded_logs/3e0b8bba-6ae9-42a3-832e-de2df2296731.log", "Custom File").then(() => {console.log("DONES")})
-
 app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('/ping', function (req, res) {
@@ -39,6 +37,9 @@ app.get('/ping', function (req, res) {
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
+
+app.get('/game/:game_id/', require("./controllers/get_game.js")(db))
+app.get('/game/', require("./controllers/get_games.js")(db))
 
 app.use(fileUpload({
   safeFileNames: /\\/g,

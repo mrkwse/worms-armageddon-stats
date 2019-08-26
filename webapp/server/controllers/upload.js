@@ -27,6 +27,7 @@ module.exports = (logParser) => (req, res) => {
     });
   })
     .then((logFilePath) => {
+      console.log(`Parsing: ${logFilePath}`)
       return logParser(logFilePath, uploadedFileName)
     })
     .then(() => {
