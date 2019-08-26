@@ -17,7 +17,7 @@ module.exports = (logParser) => (req, res) => {
   return new Promise((resolve, reject) => {
     // Use the mv() method to place the file somewhere on your server
     const newFileName = `${uuid()}.log`
-    const logFilePath = `./uploaded_logs/${newFileName}`;
+    const logFilePath = `./logs/uploaded/${newFileName}`;
     uploadedFile.mv(logFilePath, function(err) {
       if (err) {
         return reject(new Error(err))

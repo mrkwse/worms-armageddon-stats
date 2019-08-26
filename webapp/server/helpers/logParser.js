@@ -79,7 +79,6 @@ const getGameTeams = (teamModels, teamTimeEvents, winnerEvents) => {
     const pattern = /(.*) wins the (?:round|match)(?:\.|\!)?/
     const match = pattern.exec(winnerEvent)
     if(match && match.length === 2){
-      console.log(winnerEvent)
       const winnerTeamName = match[1];
       const gameTeam = gameTeams.find((gameTeam) => gameTeam.name === winnerTeamName)
       if(!gameTeam) {

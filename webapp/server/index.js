@@ -3,10 +3,10 @@ const bodyParser = require('body-parser')
 const path = require('path');
 const fileUpload = require('express-fileupload');
 const Sequelize = require('sequelize');
+const fs = require('fs');
 
 const config = require('../config.json');
 const app = express();
-
 // Option 1: Passing parameters separately
 const db = new Sequelize(config.db_name, config.db_username, config.db_password, {
   host: 'localhost',
@@ -23,8 +23,7 @@ db.authenticate()
     console.error('Unable to connect to the database:', err);
   });
 
-// Setup database and associations
-require('./setupDatabase')(db)
+
 
 const logParser = require('./helpers/logParser')(db)
 
@@ -48,7 +47,40 @@ app.use(fileUpload({
 }));
 app.post('/upload_log', require("./controllers/upload.js")(logParser));
 
-const port = process.env.PORT || 8080
-app.listen(port);
 
-console.log('App is listening on port ' + port);
+// Setup database and associations
+require('./setupDatabase')(db)
+  .then(() => {
+    const logsToParse = fs.readdirSync('./logs/toparse/');
+    const promiseSerial = funcs =>
+      funcs.reduce((promise, func) =>
+        promise.then(result =>
+          func()),
+          Promise.resolve())
+
+    const promiseChain = promiseSerial(logsToParse.map((logToParse) => {
+      if(logToParse.split('.').pop() === "log"){
+        return () => {
+          return Promise.resolve()
+            .then(() => {
+              console.log(`Parsing: ${logToParse}`)
+              return logParser(`./logs/toparse/${logToParse}`,logToParse)
+            })
+            .then(() => {
+              fs.renameSync(`./logs/toparse/${logToParse}`,`./logs/parsed/${logToParse}`)
+            })
+        };
+      };
+      return () => {};
+    }))
+    return promiseChain;
+  })
+  .then(() => {
+    const port = process.env.PORT || 8080
+    app.listen(port);
+
+    console.log('App is listening on port ' + port);
+  })
+  .catch((err) => {
+    console.log('Server Failed to start:', err);
+  })

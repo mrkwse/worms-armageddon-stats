@@ -63,5 +63,5 @@ module.exports = (db) => {
 
 
   // Update columns, deleting any data in columns that get changed
-  db.sync({alter: true})
+  return db.sync({alter: true})
 }
