@@ -86,13 +86,50 @@ module.exports = (db) => (req, res) => {
     .then((teams) => {
       return Promise.all(teams.map((team) => {
         return Promise.all([
+          db.models.turnutilityweapon.findAll({
+            attributes: [
+              [db.col('utilityweapon.id'), 'id'],
+              [db.col('utilityweapon.name'), 'Weapon'],
+              [db.fn('count', db.col('turnutilityweapon.numberOfFires')), 'TurnsUsed'],
+              [db.fn('sum', db.col('turnutilityweapon.numberOfFires')), 'NumberOfFires'],
+            ],
+            group: ['utilityweapon.id'],
+            include: [{
+              model: db.models.utilityweapon,
+              attributes: [],
+              required: true,
+            },{
+              attributes: [],
+              model: db.models.turn,
+              required: true,
+              include: [{
+                model: db.models.gameteam,
+                attributes: [],
+                required: true,
+                include: [{
+                  model: db.models.game,
+                  attributes: [],
+                  required: true,
+                  where: gameWhere,
+                },{
+                  model: db.models.team,
+                  attributes: [],
+                  required: true,
+                  where: {
+                    id: team.id
+                  }
+                }]
+              }]
+            }]
+          }),
           db.models.turn.findAll({
             attributes: [
+              [db.col('weapon.id'), 'id'],
               [db.col('weapon.name'), 'Weapon'],
               [db.fn('count', db.col('turn.numberOfFires')), 'TurnsUsed'],
               [db.fn('sum', db.col('turn.numberOfFires')), 'NumberOfFires'],
             ],
-            group: ['weapon.name'],
+            group: ['weapon.id'],
             where: {
               "weaponId": {
                 [Op.not]: null,
@@ -124,83 +161,21 @@ module.exports = (db) => (req, res) => {
         ])
       }))
     })
-  // db.models.turn.findAll({
-  //   attributes: [
-  //     [db.col('gameteam->team.name'), "TeamName"],
-  //     [db.col('gameteam.roundCount'), "RoundCount"],
-  //     [db.col('weapon.name'), 'Weapon'],
-  //     [db.fn('sum', db.col('turn.numberOfFires')), 'Fires']
-  //   ],
-  //   group: ['gameteam->team.id', 'weapon.name', 'gameteam.roundCount'],
-  //   where: {
-  //     "weaponId": {
-  //       [Op.not]: null,
-  //     }
-  //   },
-  //   include: [{
-  //     attributes: [],
-  //     model: db.models.weapon
-  //   },{
-  //     model: db.models.gameteam,
-  //     attributes: [],
-  //     required: true,
-  //     include: [{
-  //       model: db.models.team,
-  //       attributes: [],
-  //     }]
-  //   }]
-  // })
-    // .then((results) => {
-    //   const teams = {};
-    //   results.forEach((result) => {
-    //     const dataValues = result.dataValues;
-    //       if(!(teams[dataValues.TeamName])) {
-    //       teams[dataValues.TeamName] = {
-    //         roundCount: dataValues.RoundCount,
-    //         weapons: [],
-    //       }
-    //     }
-    //     teams[dataValues.TeamName].weapons.push({
-    //       name: dataValues.Weapon,
-    //       fires: dataValues.Fires,
-    //     })
-    //   })
-    //   return teams
-    // })
-
-  // db.models.game.findAll({
-  //   where: {
-  //     id: 151,
-  //     //'gameteams->team.name': "Todd"
-  //   },
-  //   attributes: ['gameteams.id', [db.fn('sum', db.col('gameteams.roundCount')), 'Fires']],
-  //   group: ['game.id', 'gameteams.id'],
-  //   //
-  //   include: [{
-  //     model: db.models.gameteam,
-  //     // include: [{
-  //     //   model: db.models.team,
-  //     //   // where: {
-  //     //   //   'name': "Todd"
-  //     //   // }
-  //     // },{
-  //     //   model: db.models.turn,
-  //     //   include: [{
-  //     //     model: db.models.weapon
-  //     //   }]
-  //     // }]
-  //   }]
-  // })
-    .then((model) => {
-        res.json({
-          data: model,
-          query: {
-            startDate,
-            endDate,
-            gameIds,
-            playerIds,
-          }
-        })
+    .then((data) => {
+      const reorderedData = data.map(d => ({
+        ...d[2].dataValues,
+        weapons: d[1],
+        utility_weapons: d[0],
+      }))
+      res.json({
+        data: reorderedData,
+        query: {
+          startDate,
+          endDate,
+          gameIds,
+          playerIds,
+        }
+      })
     })
     .catch((err) => {
       console.log(err)
