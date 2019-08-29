@@ -29,11 +29,18 @@ const getDate = (event) => {
   return event.split(" ").slice(-3).join(" ")
 }
 
-const getTeams = (teamEvents) => {
+const getTeams = (teamEvents, lanGame) => {
   const teams = [];
   teamEvents.forEach((teamEvent) => {
     const colour = teamEvent.split(':')[0]
-    const name = teamEvent.split('"').slice(1,-1).join('"')
+    let name;
+    if(lanGame) {
+      // Green: "tom" as "Super BREAKING" [Local Player] [Host]
+      name = teamEvent.split('"').slice(3,-1).join('"')
+    } else {
+      // Red:  "1-UP"
+      name = teamEvent.split('"').slice(1,-1).join('"')
+    }
     teams.push({
       name,
       colour, // Not used atm
@@ -42,12 +49,19 @@ const getTeams = (teamEvents) => {
   return teams;
 }
 
-const getGameTeams = (teamModels, teamTimeEvents, winnerEvents) => {
+const getGameTeams = (teamModels, teamTimeEvents, winnerEvents, lanGame) => {
   const gameTeams = [];
   let matchFailed = false
   let teamMissing = false
   teamTimeEvents.forEach((teamTimeEvent) => {
-    const pattern = /^(.*):[ ]*Turn: (.*), Retreat: (.*), Total: (.*), Turn count: (.*)$/;
+    let pattern;
+    if(lanGame) {
+      // Super BREAKING (tom):   Turn: 00:00:00.00, Retreat: 00:00:00.00, Total: 00:00:00.00, Turn count: 0
+      pattern = /^(.*) \(.*\):[ ]*Turn: (.*), Retreat: (.*), Total: (.*), Turn count: (.*)$/;
+    } else {
+      // 1-UP: Turn: 00:00:00.00, Retreat: 00:00:00.00, Total: 00:00:00.00, Turn count: 1
+      pattern = /^(.*):[ ]*Turn: (.*), Retreat: (.*), Total: (.*), Turn count: (.*)$/;
+    }
     const match = pattern.exec(teamTimeEvent)
     if(match === null || match.length !== 6) {
       console.log(teamTimeEvent)
@@ -101,11 +115,18 @@ module.exports = (db) => (logFilePath, finalFilePath, originalFileName) => {
       spaceIndices.push(index);
     }
   })
+  let lanGame = false
   const data = {}
   return Promise.resolve()
     .then(() => {
       // Extract details for game table
-      const date = getDate(events[0])
+      let date;
+      if(!events[0].includes("Game Started at ")) {
+        lanGame = true
+        date = getDate(events[1])
+      } else {
+        date = getDate(events[0])
+      }
       return db.models.game.create({
         name: originalFileName,
         date: date,
@@ -118,14 +139,13 @@ module.exports = (db) => (logFilePath, finalFilePath, originalFileName) => {
         totalTimeInS: 0,
       })
         .then((gameModel) => {
-          console.log(`Created Game with id: ${gameModel.id}`)
           data.game = gameModel;
         })
     })
     .then(() => {
       // Extract details for team table
       const teamEvents = events.slice(spaceIndices[0]+1, spaceIndices[1])
-      return getTeams(teamEvents)
+      return getTeams(teamEvents, lanGame)
     })
     .then((teams) => {
       return Promise.all(teams.map((team) => {
@@ -147,7 +167,7 @@ module.exports = (db) => (logFilePath, finalFilePath, originalFileName) => {
       const teamTimeEvents = events.slice(spaceIndices[2]+2, spaceIndices[3])
       const winnerEvents = events.slice(spaceIndices[5]+1)
 
-      return getGameTeams(data.teams, teamTimeEvents, winnerEvents)
+      return getGameTeams(data.teams, teamTimeEvents, winnerEvents, lanGame)
     })
     .then((gameTeams) => {
       return Promise.all(gameTeams.map((gameTeam) => {
@@ -220,8 +240,14 @@ module.exports = (db) => (logFilePath, finalFilePath, originalFileName) => {
         turnNumber = turnNumber + 1
         turnEvents.forEach((turnEvent) => {
           // Get Turn Start
-          // [00:00:02.24] ��� 1-UP starts turn
-          const turnStartPattern = /^\[(.*)\] ��� (.*) starts turn$/
+          let turnStartPattern;
+          if(lanGame) {
+            // [00:01:22.10] ��� !"�$%^&*())_-=+` (tom) starts turn
+            turnStartPattern = /^\[(.*)\] ��� (.*) \(.*\) starts turn$/
+          } else {
+            // [00:00:02.24] ��� 1-UP starts turn
+            turnStartPattern = /^\[(.*)\] ��� (.*) starts turn$/
+          }
           const turnStartMatch = turnStartPattern.exec(turnEvent)
           if(turnStartMatch && turnStartMatch.length === 3) {
             turnStartTime = timeToS(turnStartMatch[1])
@@ -266,7 +292,7 @@ module.exports = (db) => (logFilePath, finalFilePath, originalFileName) => {
 
           // Get Sudden Death
           // [00:19:02.66] ��� Sudden Death
-          const suddenDeathPattern = /^\[(.*)\] .* Sudden Death$/
+          const suddenDeathPattern = /^\[(.*)\] ��� Sudden Death$/
           const suddenDeathMatch = suddenDeathPattern.exec(turnEvent)
           if(suddenDeathMatch && suddenDeathMatch.length === 2) {
             suddenDeath = true
@@ -274,8 +300,15 @@ module.exports = (db) => (logFilePath, finalFilePath, originalFileName) => {
           }
 
           // Get turn time, retreat time, changeover time, turn end via loss of control
-          // [00:18:58.60] ��� 2-UP loses turn due to loss of control; time used: 10.96 sec turn, 0.00 sec retreat
-          const endTurnPattern = new RegExp("\\[(.*)\\] [^\ ]* "+ escapeRegExp(turnTeam) + " (.*); time used: (.*) sec turn, (.*) sec retreat$");
+          let endTurnPattern;
+          if(lanGame) {
+            // [00:00:54.82] ��� Super BREAKING (tom) ends turn; time used: 43.60 sec turn, 3.00 sec retreat
+            endTurnPattern = new RegExp("\\[(.*)\\] ��� "+ escapeRegExp(turnTeam) + " \\(.*\\) (.*); time used: (.*) sec turn, (.*) sec retreat$");
+          } else {
+            // [00:18:58.60] ��� 2-UP loses turn due to loss of control; time used: 10.96 sec turn, 0.00 sec retreat
+            endTurnPattern = new RegExp("\\[(.*)\\] ��� "+ escapeRegExp(turnTeam) + " (.*); time used: (.*) sec turn, (.*) sec retreat$");
+          }
+
           const endTurnMatch = endTurnPattern.exec(turnEvent)
           if(endTurnMatch && endTurnMatch.length === 5) {
             if(endTurnMatch[2] === "loses turn due to loss of control") {
@@ -288,12 +321,17 @@ module.exports = (db) => (logFilePath, finalFilePath, originalFileName) => {
 
           // Get damage and kills
           // [00:01:30.82] ��� Damage dealt: 26 to 1-UP
-          const damagePattern = /^\[(.*)\] .* Damage dealt: (.*)$/
+          const damagePattern = /^\[(.*)\] ��� Damage dealt: (.*)$/
           const damageMatch = damagePattern.exec(turnEvent)
           if(damageMatch && damageMatch.length === 3) {
             const damageStringArray = damageMatch[2].split(", ").reverse()
             damageStringArray.forEach((damageString, index, array) => {
-              const damageSubPattern = /^([0-9]*)(?: \(([0-9]*) kills?\))? to (.*)$/
+              let damageSubPattern;
+              if(lanGame) {
+                damageSubPattern = /^([0-9]*)(?: \(([0-9]*) kills?\))? to (.*) \(.*\)$/
+              } else {
+                damageSubPattern = /^([0-9]*)(?: \(([0-9]*) kills?\))? to (.*)$/
+              }
               const damageSubMatch = damageSubPattern.exec(damageString)
               if(damageSubMatch && damageSubMatch.length === 4) {
                 const kills = damageSubMatch[2] === undefined ? 0 : parseInt(damageSubMatch[2])
@@ -441,7 +479,7 @@ module.exports = (db) => (logFilePath, finalFilePath, originalFileName) => {
         })
     })
     .then(() => {
-      // TODO: Awards parsing 
+      // TODO: Awards parsing
     })
     .then(() => {
       console.log(`Finished Parsing: ${logFilePath}`)
