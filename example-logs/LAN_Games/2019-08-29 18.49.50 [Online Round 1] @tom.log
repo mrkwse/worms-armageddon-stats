@@ -1,0 +1,70 @@
+Game ID: "extern"
+Game Started at 2019-08-29 18:49:50 GMT
+Game Engine Version: 3.7.2.1
+File Format Version: 3.6.29.48 - 3.7.2.1
+Exported with Version: 3.7.2.1
+
+Red:   "tom" as "{}[];':@#~/?.>,<" [Local Player] [Host]
+Blue:  "tom" as "!"£$%^&*())_-=+`" [Local Player] [Host]
+Green: "tom" as "Super BREAKING" [Local Player] [Host]
+
+[00:00:00.00] ••• Super BREAKING (tom) starts turn
+[00:00:04.46] ••• Super BREAKING (tom) fires Jet Pack
+[00:00:11.88] ••• Super BREAKING (tom) used 23 units of Jet Pack fuel
+[00:00:14.46] ••• Super BREAKING (tom) fires Jet Pack
+[00:00:18.80] ••• Super BREAKING (tom) used 23 units of Jet Pack fuel
+[00:00:20.88] ••• Super BREAKING (tom) fires Jet Pack
+[00:00:28.34] ••• Super BREAKING (tom) used 30 units of Jet Pack fuel
+[00:00:35.08] ••• Super BREAKING (tom) fires Jet Pack
+[00:00:39.14] ••• Super BREAKING (tom) used 30 units of Jet Pack fuel
+[00:00:49.40] ••• Super BREAKING (tom) fires Sheep
+[00:00:54.82] ••• Super BREAKING (tom) ends turn; time used: 43.60 sec turn, 3.00 sec retreat
+[00:01:01.38] ••• Damage dealt: 64 to {}[];':@#~/?.>,< (tom), 37 to !"£$%^&*())_-=+` (tom)
+[00:01:01.38] ••• {}[];':@#~/?.>,< (tom) starts turn
+[00:01:06.86] ••• {}[];':@#~/?.>,< (tom) fires Select Worm
+[00:01:11.24] ••• {}[];':@#~/?.>,< (tom) fires Bazooka
+[00:01:11.32] ••• {}[];':@#~/?.>,< (tom) loses turn due to loss of control; time used: 5.78 sec turn, 0.00 sec retreat
+[00:01:22.10] ••• Damage dealt: 36 (1 kill) to {}[];':@#~/?.>,< (tom), 45 to !"£$%^&*())_-=+` (tom)
+[00:01:22.10] ••• !"£$%^&*())_-=+` (tom) starts turn
+[00:01:28.84] ••• !"£$%^&*())_-=+` (tom) fires Ninja Rope
+[00:01:31.86] ••• !"£$%^&*())_-=+` (tom) fires Ninja Rope
+[00:01:33.40] ••• !"£$%^&*())_-=+` (tom) fires Ninja Rope
+[00:01:44.92] ••• !"£$%^&*())_-=+` (tom) fires Low Gravity
+[00:01:59.16] ••• !"£$%^&*())_-=+` (tom) fires Laser Sight
+[00:02:05.02] ••• !"£$%^&*())_-=+` (tom) fires Baseball Bat
+[00:02:08.60] ••• !"£$%^&*())_-=+` (tom) ends turn; time used: 38.90 sec turn, 3.00 sec retreat
+[00:02:14.78] ••• Damage dealt: 100 (1 kill) to Super BREAKING (tom)
+[00:02:14.78] ••• Super BREAKING (tom) starts turn
+[00:02:19.52] ••• Super BREAKING (tom) fires Fast Walk
+[00:02:27.16] ••• Super BREAKING (tom) fires Parachute
+[00:02:46.86] ••• Super BREAKING (tom) fires Surrender
+[00:02:46.88] ••• Super BREAKING (tom) ends turn; time used: 27.86 sec turn, 0.00 sec retreat
+[00:02:49.72] ••• {}[];':@#~/?.>,< (tom) starts turn
+[00:03:10.94] ••• {}[];':@#~/?.>,< (tom) fires Concrete Donkey
+[00:03:15.70] ••• {}[];':@#~/?.>,< (tom) loses turn due to loss of control; time used: 19.04 sec turn, 3.00 sec retreat
+[00:03:32.80] ••• Damage dealt: 23 to {}[];':@#~/?.>,< (tom), 89 (1 kill) to !"£$%^&*())_-=+` (tom)
+[00:03:32.80] ••• !"£$%^&*())_-=+` (tom) starts turn
+[00:03:44.40] ••• !"£$%^&*())_-=+` (tom) fires Super Banana Bomb
+[00:03:46.80] ••• !"£$%^&*())_-=+` (tom) loses turn due to loss of control; time used: 7.50 sec turn, 0.70 sec retreat
+[00:03:52.72] ••• Damage dealt: 98 (1 kill) to !"£$%^&*())_-=+` (tom)
+[00:03:52.72] ••• {}[];':@#~/?.>,< (tom) starts turn
+[00:03:58.36] ••• {}[];':@#~/?.>,< (tom) fires French Sheep Strike
+[00:04:04.50] ••• {}[];':@#~/?.>,< (tom) ends turn; time used: 1.32 sec turn, 3.00 sec retreat
+[00:04:17.38] ••• Damage dealt: 7 to {}[];':@#~/?.>,< (tom), 31 (1 kill) to !"£$%^&*())_-=+` (tom), 131 to Super BREAKING (tom)
+[00:04:17.40] ••• Game Ends - Round Finished
+
+Team time totals:
+{}[];':@#~/?.>,< (tom): Turn: 00:00:26.14, Retreat: 00:00:06.00, Total: 00:00:32.14, Turn count: 3
+!"£$%^&*())_-=+` (tom): Turn: 00:00:46.40, Retreat: 00:00:03.70, Total: 00:00:50.10, Turn count: 2
+Super BREAKING (tom):   Turn: 00:01:11.46, Retreat: 00:00:03.00, Total: 00:01:14.46, Turn count: 2
+
+Total Jet Pack fuel used: 106
+End of round 1
+
+Round time: 0:04:17
+Total game time elapsed: 0:04:17
+
+{}[];':@#~/?.>,< wins the round.
+
+Worm of the round: Worm 1 ({}[];':@#~/?.>,<)
+Most damage with one shot: 169 - Worm 1 ({}[];':@#~/?.>,<)

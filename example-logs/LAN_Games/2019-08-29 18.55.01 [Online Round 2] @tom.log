@@ -1,0 +1,31 @@
+Game ID: "extern"
+Game Started at 2019-08-29 18:55:01 GMT
+Game Engine Version: 3.7.2.1
+File Format Version: 3.6.29.48 - 3.7.2.1
+Exported with Version: 3.7.2.1
+
+Red:   "tom" as "{}[];':@#~/?.>,<" [Local Player] [Host]
+Blue:  "tom" as "!"£$%^&*())_-=+`" [Local Player] [Host]
+Green: "tom" as "Super BREAKING" [Local Player] [Host]
+
+[00:00:00.00] ••• {}[];':@#~/?.>,< (tom) starts turn
+[00:00:06.68] ••• {}[];':@#~/?.>,< (tom) fires Armageddon
+[00:00:08.82] ••• {}[];':@#~/?.>,< (tom) loses turn due to loss of control; time used: 1.82 sec turn, 0.02 sec retreat
+[00:00:44.46] ••• Damage dealt: 300 (3 kills) to {}[];':@#~/?.>,< (tom), 300 (3 kills) to !"£$%^&*())_-=+` (tom), 300 (3 kills) to Super BREAKING (tom)
+[00:00:44.48] ••• Game Ends - Round Finished
+
+Team time totals:
+{}[];':@#~/?.>,< (tom): Turn: 00:00:01.82, Retreat: 00:00:00.02, Total: 00:00:01.84, Turn count: 1
+!"£$%^&*())_-=+` (tom): Turn: 00:00:00.00, Retreat: 00:00:00.00, Total: 00:00:00.00, Turn count: 0
+Super BREAKING (tom):   Turn: 00:00:00.00, Retreat: 00:00:00.00, Total: 00:00:00.00, Turn count: 0
+
+End of round 2
+
+Round time: 0:00:44
+Total game time elapsed: 0:00:44
+
+The round was drawn.
+
+Worm of the round: Worm 1 ({}[];':@#~/?.>,<)
+Most kills with one shot: 9 - Worm 1 ({}[];':@#~/?.>,<)
+Most damage with one shot: 900 - Worm 1 ({}[];':@#~/?.>,<)
