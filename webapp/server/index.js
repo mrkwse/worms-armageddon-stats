@@ -39,7 +39,6 @@ app.get('/game/:game_id/', require("./controllers/get_game.js")(db))
 app.get('/game/', require("./controllers/get_games.js")(db))
 
 app.get('/weapons/', require("./controllers/get_weapons.js")(db))
-app.get('/weapons2/', require("./controllers/get_utility_weapons.js")(db))
 
 app.use(fileUpload({
   safeFileNames: /\\/g,

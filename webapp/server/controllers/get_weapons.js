@@ -32,13 +32,11 @@ module.exports = (db) => (req, res) => {
   if(req.query.startDate) {
     // E.g. startDate=2019-08-26T09:17:53.000Z
     startDate = new Date(req.query.startDate);
-    console.log(startDate);
   }
 
   if(req.query.endDate) {
     // E.g. endDate=2019-08-26T19:17:53.000Z
     endDate = new Date(req.query.endDate);
-    console.log(endDate);
   }
 
   if(startDate && endDate){
