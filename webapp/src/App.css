@@ -31,3 +31,7 @@
     transform: rotate(360deg);
   }
 }
+.miniPlayerCard{
+  width:250px;
+  color:black;
+}
