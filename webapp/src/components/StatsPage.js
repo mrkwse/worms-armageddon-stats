@@ -2,7 +2,7 @@ import React from 'react';
 import Wins from './wins'
 import Damage from './damage'
 
-class Basiccomponent extends React.Component {
+class StatsPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -23,4 +23,4 @@ class Basiccomponent extends React.Component {
     }
 }
 
-export default Basiccomponent;
+export default StatsPage;

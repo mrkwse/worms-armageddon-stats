@@ -2,7 +2,7 @@ import React from 'react';
 import Pics from '../Assets/Images/worms2.png'
 
 
-class Basiccomponent extends React.Component {
+class PlayerProfiles extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -51,4 +51,4 @@ class Basiccomponent extends React.Component {
     }
 }
 
-export default Basiccomponent;
+export default PlayerProfiles;

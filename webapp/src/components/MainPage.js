@@ -4,7 +4,7 @@ import Profiles from './ProfilesPage';
 import Stats from './StatsPage';
 import Feedback from './AskQuestions';
 
-class Basiccomponent extends React.Component {
+class MainPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -58,4 +58,4 @@ class Basiccomponent extends React.Component {
     }
 }
 
-export default Basiccomponent;
+export default MainPage;

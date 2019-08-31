@@ -2,7 +2,7 @@ import React from 'react';
 import statsjson from '../Assets/all_games'
 import VegaLite from 'react-vega-lite';
 
-class Basiccomponent extends React.Component {
+class Wins extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -54,4 +54,4 @@ class Basiccomponent extends React.Component {
     }
 }
 
-export default Basiccomponent;
+export default Wins;

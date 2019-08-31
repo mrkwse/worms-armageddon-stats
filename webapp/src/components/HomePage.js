@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Basiccomponent extends React.Component {
+class HomePage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,4 +17,4 @@ class Basiccomponent extends React.Component {
     }
 }
 
-export default Basiccomponent;
+export default HomePage;

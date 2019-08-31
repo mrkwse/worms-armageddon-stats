@@ -1,8 +1,8 @@
 import React from 'react';
 import Profile from './PlayerProfiles'
 import PlayerProfiles from '../Assets/PlayerProfiles'
-import { shuffle, map, flatten } from 'lodash';
-class Basiccomponent extends React.Component {
+import { map } from 'lodash';
+class ProfilesPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,4 +22,4 @@ class Basiccomponent extends React.Component {
     }
 }
 
-export default Basiccomponent;
+export default ProfilesPage;
