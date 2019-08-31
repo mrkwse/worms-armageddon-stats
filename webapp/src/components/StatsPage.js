@@ -1,6 +1,7 @@
 import React from 'react';
-import Wins from './wins'
-import Damage from './damage'
+// import Wins from './wins'
+// import Damage from './damage'
+import GenericStats from './GenericStats'
 
 class StatsPage extends React.Component {
   constructor(props) {
@@ -16,8 +17,9 @@ class StatsPage extends React.Component {
           <h2>
               This is the stats page
           </h2>
-          <Wins />
-          <Damage />
+          {/* <Wins />
+          <Damage /> */}
+          <GenericStats />
             </div>
         )
     }
