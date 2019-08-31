@@ -4,7 +4,8 @@
       "style": "aquatic",
       "faveweapon": "Holy Hand Grenade",
       "bio": "Player of the classic game worms",
-      "team": "worm1, worm2, worm3, worm4"
+      "team": "worm1, worm2, worm3, worm4",
+      "src": "worms2"
     },
     "Tomn": {
         "name": "Tom N",
@@ -12,7 +13,8 @@
         "faveweapon": "Super banana bomb",
         "bio": "Why does Tom like flinging himself into the sea? We will probably never know",
         "quote": "In the sea in the sea! oh i went in the sea...",
-        "team": "Biddy, worm2, worm3, worm4"
+        "team": "Biddy, worm2, worm3, worm4",
+        "src": "./Worms1.png"
       },
       "Alice": {
         "name": "Alice",
@@ -20,7 +22,8 @@
         "faveweapon": "Sheep on a rope",
         "bio": "Alice trained in the mountains to become master of worms armegeddon. It didn't seem to help",
         "quote": "If in doubt baseball bat",
-        "team": "Ether Trogg, Betty, worm3, worm4"
+        "team": "Ether Trogg, Betty, worm3, worm4",
+        "src": "./Worms1.png"
       },
       "TomP": {
         "name": "Tom P",

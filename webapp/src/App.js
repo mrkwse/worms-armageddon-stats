@@ -3,15 +3,23 @@ import logo from './logo.svg';
 import './App.css';
 import Basic from './components/Basiccomponent'
 import Ask from './components/AskQuestions'
-import MiniPlayer from './components/MiniPlayerProfile'
+import MiniPlayer from './components/PlayerProfiles'
 import PlayerProfiles from './Assets/PlayerProfiles'
+import ProfilesPage from './components/ProfilesPage'
+import Main from './components/MainPage'
+import { shuffle, map, flatten } from 'lodash';
+
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-      <Basic />
+      {/* <Basic />
       <Ask />
-      <MiniPlayer player={PlayerProfiles.PlayerExample}/>
+
+      <MiniPlayer player={PlayerProfiles.PlayerExample}/> */}
+      <Main />
+      <ProfilesPage />
+
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
