@@ -48,3 +48,14 @@
 .full-card{
   color: black;
 }
+.position-top{
+  position: absolute;
+  top: 0;
+  left:10px;
+}
+.margin{
+  margin-top:80px;
+}
+.graphs{
+  background-color: white;
+}

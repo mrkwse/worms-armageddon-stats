@@ -25,7 +25,7 @@ class Basiccomponent extends React.Component {
     <span className="input-group-text">anything we can add?</span>
   </div>
   <textarea className="form-control" aria-label="With textarea" value={this.state.inputText} onChange={this.inputChange}></textarea>
-  <button type="button" onClick={() => {this.validateForm();}} className="btn btn-primary">Submit</button>
+  <button type="button" onClick={() => {this.validateForm();}} className="">Submit</button>
 
 </div>
 </form>
