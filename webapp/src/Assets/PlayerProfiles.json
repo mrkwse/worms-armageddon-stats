@@ -1,12 +1,4 @@
 {
-    "PlayerExample": {
-      "name": "Player Example",
-      "style": "aquatic",
-      "faveweapon": "Holy Hand Grenade",
-      "bio": "Player of the classic game worms",
-      "team": "worm1, worm2, worm3, worm4",
-      "src": "worms2"
-    },
     "Tomn": {
         "name": "Tom N",
         "style": "A bit ropey",
@@ -18,7 +10,7 @@
       },
       "Alice": {
         "name": "Alice",
-        "style": "Panicked",
+        "style": "Statsy",
         "faveweapon": "Sheep on a rope",
         "bio": "Alice trained in the mountains to become master of worms armegeddon. It didn't seem to help",
         "quote": "If in doubt baseball bat",
@@ -80,14 +72,6 @@
         "bio": "",
         "quote": "",
         "team": "some worms"
-      },
-      
-    "AnotherPlayer": {
-        "name": "Player Another",
-        "style": "quite girdery",
-        "faveweapon": "Dynamite",
-        "bio": "Interestingly also a player of the classic game worms",
-        "team": "worm5, worm6, worm7, worm8"
       }
     }
 
