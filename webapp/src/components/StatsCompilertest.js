@@ -1,6 +1,5 @@
 import React from 'react';
 import statsjson from '../Assets/all_games'
-import VegaLite from 'react-vega-lite';
 import GraphComponent from './GraphComponent';
 
 class Wins extends React.Component {
@@ -10,7 +9,6 @@ class Wins extends React.Component {
 
     }
     this.listCompletedGames = this.listCompletedGames.bind(this);
-    this.listAllPlayers = this.listAllPlayers.bind(this);
     this.weaponused = this.weaponused.bind(this);
     this.killsanddamage = this.killsanddamage.bind(this);
   }
@@ -22,23 +20,6 @@ class Wins extends React.Component {
       }
     });
     return listOfCompletedGames;
-  }
-  listAllPlayers(){
-    let playerList = []
-    let playergames = {}
-    Object.keys(statsjson).forEach(key => {
-      if (statsjson[key]['gameCompleted']){
-      Object.keys(statsjson[key]['gameteams']).forEach(index => {
-        if (playerList.includes(statsjson[key]['gameteams'][index]['team']['name'] )){
-          playergames[statsjson[key]['gameteams'][index]['team']['name']] = playergames[statsjson[key]['gameteams'][index]['team']['name']] +1
-        } else {
-        playerList.push(statsjson[key]['gameteams'][index]['team']['name'])
-        playergames[statsjson[key]['gameteams'][index]['team']['name']] = 1
-        }
-      });
-    }
-    });
-    return [playerList, playergames]
   }
 
   weaponused(player){
@@ -104,8 +85,8 @@ class Wins extends React.Component {
   }
     render(){  
       let gamesList = this.listCompletedGames();
-      let allplayers = this.listAllPlayers()[0];
-      let gamesplayed = this.listAllPlayers()[1];
+      let allplayers = this.props.listAllPlayers[0];
+      let gamesplayed = this.props.listAllPlayers[1];
       // let weaponsused = this.weaponused('Alice');
       let personalkills = this.killsanddamage('Alice');
         let loseControl = {}
@@ -185,21 +166,12 @@ class Wins extends React.Component {
           
 
         });
-       barData = this.personalData['Alex']
+        console.log(this.props.focusOnPlayer)
+       barData = this.personalData[this.props.focusOnPlayer]
       }
         return (
         <div className="graphs">
              <GraphComponent xaxis="name" yaxis = {this.props.graphType} graphtype={barData} />
-             {/* 
-             <GraphComponent xaxis="name" yaxis = "damage" graphtype={barData} />
-             <GraphComponent xaxis="name" yaxis = "losecontrol" graphtype={barData} /> */}
-             
-             {/* {Object.keys(this.personalData).map((element) => {
-               return <GraphComponent title={element} xaxis='name' yaxis = 'kills' graphtype={this.personalData[element] } />
-             })}
-                 {Object.keys(this.personalData).map((element) => {
-               return <GraphComponent className="graphs" title={element} xaxis='name' yaxis = 'damage' graphtype={this.personalData[element] } />
-             })} */}
             </div>
         )
     }

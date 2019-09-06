@@ -3,6 +3,7 @@ import Home from './HomePage';
 import Profiles from './ProfilesPage';
 import Stats from './StatsPage';
 import Feedback from './AskQuestions';
+import statsjson from '../Assets/all_games'
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -11,13 +12,30 @@ class MainPage extends React.Component {
         page: <Home />
     }
   }
+  listAllPlayers(){
+    let playerList = []
+    let playergames = {}
+    Object.keys(statsjson).forEach(key => {
+      if (statsjson[key]['gameCompleted']){
+      Object.keys(statsjson[key]['gameteams']).forEach(index => {
+        if (playerList.includes(statsjson[key]['gameteams'][index]['team']['name'] )){
+          playergames[statsjson[key]['gameteams'][index]['team']['name']] = playergames[statsjson[key]['gameteams'][index]['team']['name']] +1
+        } else {
+        playerList.push(statsjson[key]['gameteams'][index]['team']['name'])
+        playergames[statsjson[key]['gameteams'][index]['team']['name']] = 1
+        }
+      });
+    }
+    });
+    return [playerList, playergames]
+  }
   changePage(input){
     if (input === 'Home'){
         this.setState({page: <Home />});
     } else if (input === "Profiles") {
         this.setState({page: <Profiles />});
     } else if (input === "Stats") {
-        this.setState({page: <Stats/>});
+        this.setState({page: <Stats players={this.listAllPlayers()}/>});
     } else if (input === "Feedback"){
         this.setState({page: <Feedback />})
     }
