@@ -54,6 +54,7 @@ class StatsPage extends React.Component {
                 <option value="losecontrol">losecontrol</option>
                 <option value="gamesplayed">gamesplayed</option>
                 <option value="ninjaRope">Ninja Ropes</option>
+
               </select>
             </div>
           <StatsCompiler personOrGroup={this.state.personOrGroup} graphType={this.state.graphType} listAllPlayers={this.props.players} focusOnPlayer={this.state.focusOnPlayer}/>
@@ -64,6 +65,7 @@ class StatsPage extends React.Component {
               <select name="personalOrGroup" className="form-control" value={this.state.personOrGroup} onChange={this.personOrGroupChange} required>
                 <option value="group">group</option>
                 <option value="personal">personal</option>
+                
               </select>
             </div>
             <div className="form-group">
@@ -77,6 +79,7 @@ class StatsPage extends React.Component {
               <select name="groupstats" className="form-control" value={this.state.personalstats} onChange={this.personalstatsChange} required>
                 <option value="weapons">weapons</option>
                 <option value="kills">killed</option>
+                
 
               </select>
             </div>
