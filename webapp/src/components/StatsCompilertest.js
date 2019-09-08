@@ -1,6 +1,8 @@
+'use strict'
 import React from 'react';
 import statsjson from '../Assets/all_games'
 import GraphComponent from './GraphComponent';
+
 
 class Wins extends React.Component {
   constructor(props) {
@@ -11,6 +13,7 @@ class Wins extends React.Component {
     this.listCompletedGames = this.listCompletedGames.bind(this);
     this.weaponused = this.weaponused.bind(this);
     this.killsanddamage = this.killsanddamage.bind(this);
+    this.utilityused = this.utilityused.bind(this)
   }
   listCompletedGames(){
   let listOfCompletedGames = []
@@ -47,6 +50,41 @@ class Wins extends React.Component {
       }
     }
   });
+  return weaponsUsed
+  }
+  utilityused(player){
+    let utilityUsed = {}
+    let totalTurns = 0
+    Object.keys(statsjson).forEach(key => {
+      if (statsjson[key]['gameCompleted']){
+        if (statsjson[key]['gameteams']){
+          (statsjson[key]['gameteams']).forEach(function (item) {
+            if (item['team']['name'] === player){
+            if (item['turns'].length > 0){
+              (item['turns']).forEach(function (index) {
+                totalTurns += 1;
+                if (index['turnutilityweapons'] !== null && index['turnutilityweapons'].length > 0){
+                  (index['turnutilityweapons']).forEach(function(element) {
+                    if (element['utilityweapon']['name'] in utilityUsed){
+                      console.log(element['numberOfFires'])
+                      utilityUsed[element['utilityweapon']['name']] = utilityUsed[element['utilityweapon']['name']] + element['numberOfFires']
+
+              } else {
+                  utilityUsed[element['utilityweapon']['name']] = element['numberOfFires']
+              }
+                })
+                }
+              })
+            }
+          }
+          });
+      }
+    }
+  });
+Object.keys(utilityUsed).forEach(key => {
+  utilityUsed[key] = utilityUsed[key] / totalTurns
+})
+  return utilityUsed
   }
 
   killsanddamage(player){
@@ -80,15 +118,11 @@ class Wins extends React.Component {
 
     return killsanddamage
   }
-  makeagraph(){
-
-  }
+  
     render(){  
       let gamesList = this.listCompletedGames();
       let allplayers = this.props.listAllPlayers[0];
       let gamesplayed = this.props.listAllPlayers[1];
-      // let weaponsused = this.weaponused('Alice');
-      let personalkills = this.killsanddamage('Alice');
         let loseControl = {}
         let totalDamage ={}
         let winners = {}
@@ -151,28 +185,45 @@ class Wins extends React.Component {
                 }
               });
               Object.keys(winners).forEach(key => {
-                barData['values'].push({"name": key ,"wins": winners[key], "damage": totalDamage[key], "losecontrol": loseControl[key], "gamesplayed": gamesplayed[key] })
-           
+                let utilities = this.utilityused(key)
+                barData['values'].push({"name": key ,"wins": winners[key], "damage": totalDamage[key], "losecontrol": loseControl[key], "gamesplayed": gamesplayed[key], "ninjaRope": utilities['Ninja Rope']})
             })
         } else if (this.props.personOrGroup ==='personal') {
         this.personalData = {}
+        this.weapons = {}
         allplayers.forEach((element) => {
           let personalVendetta = this.killsanddamage(element);
+          let personalWeapons = this.weaponused(element);
           this.personalData[element]= {'values': []}
           Object.keys(personalVendetta).forEach(key => {
-            this.personalData[element]['values'].push({"name": key ,"kills": personalVendetta[key]['kills'], "damage": personalVendetta[key]['damage']})
+            this.personalData[element]['values'].push({"name": key ,"kills": personalVendetta[key]['kills'], "damage": personalVendetta[key]['damage'], "weapons": personalWeapons})
           })
-          
-          
+          this.weapons[element] = {'values': []}
+          Object.keys(personalWeapons).forEach(key => {     
+            this.weapons[element]['values'].push({"weapon": key ,"usage": personalWeapons[key]})
+          })
 
         });
-        console.log(this.props.focusOnPlayer)
+        if (this.props.personalstats === 'weapons' ){
+          
+          barData = this.weapons[this.props.focusOnPlayer]
+    
+        } else{
        barData = this.personalData[this.props.focusOnPlayer]
+
+        }
+      
       }
         return (
+          (this.props.personalstats === 'weapons' ?
         <div className="graphs">
-             <GraphComponent xaxis="name" yaxis = {this.props.graphType} graphtype={barData} />
+             <GraphComponent xaxis="weapon" yaxis = "usage" graphtype={barData} />
             </div>
+            :
+            <div className="graphs">
+            <GraphComponent xaxis="name" yaxis = {this.props.graphType} graphtype={barData} />
+           </div>
+          )
         )
     }
 }
