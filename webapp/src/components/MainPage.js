@@ -2,6 +2,7 @@ import React from 'react';
 import Home from './HomePage';
 import Profiles from './ProfilesPage';
 import Stats from './StatsPage';
+import Matches from './Matches';
 import Feedback from './AskQuestions';
 import statsjson from '../Assets/all_games'
 
@@ -36,6 +37,8 @@ class MainPage extends React.Component {
         this.setState({page: <Profiles />});
     } else if (input === "Stats") {
         this.setState({page: <Stats players={this.listAllPlayers()}/>});
+    } else if (input === "Matches") {
+        this.setState({page: <Matches matches={statsjson}/>});
     } else if (input === "Feedback"){
         this.setState({page: <Feedback />})
     }
@@ -56,6 +59,9 @@ class MainPage extends React.Component {
       </li>
       <li className="nav-item active">
         <button className="nav-link" onClick={() => {this.changePage('Stats');}}>Stats </button>
+      </li>
+      <li className="nav-item active">
+        <button className="nav-link" onClick={() => {this.changePage('Matches');}}>Matches</button>
       </li>
       <li className="nav-item active">
         <button className="nav-link" onClick={() => {this.changePage('Feedback');}}>Feedback</button>
