@@ -127,6 +127,7 @@ export function killsanddamage(player){
     let barData = {"values": [
     ]
   }
+  let playerList = listAllPlayers()[0];
     Object.keys(statsjson).forEach(key => {
         if (statsjson[key]['gameCompleted']){
             var teams = statsjson[key]['gameteams']
@@ -183,8 +184,14 @@ export function killsanddamage(player){
           });
           Object.keys(winners).forEach(key => {
             let utilities = utilitiesUsed(key);
-            barData['values'].push({"name": key ,"wins": winners[key], "damage": totalDamage[key], "losecontrol": loseControl[key], "gamesplayed": gamesplayed[key], "ninjaRope": utilities['Ninja Rope']})
+            barData['values'].push({"name": key ,"wins": winners[key]})
         })
+        Object.keys(playerList).forEach(key => {
+            console.log(playerList[key])
+            let utilities = utilitiesUsed(playerList[key]);
+            barData['values'].push({"name": playerList[key], "damage": totalDamage[playerList[key]], "losecontrol": loseControl[playerList[key]], "gamesplayed": gamesplayed[playerList[key]], "ninjaRope": utilities['Ninja Rope']})
+        })
+        
         return barData
   }
 
